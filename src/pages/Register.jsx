@@ -5,9 +5,11 @@ import AuthContext from "../context/AuthContext";
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { createUser, manageProfile } = useContext(AuthContext);
+  const { createUser, manageProfile, signinWithGoogle } =
+    useContext(AuthContext);
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
@@ -19,6 +21,17 @@ const Register = () => {
         console.log(result.user);
         manageProfile(name, PhotoUrl);
         navigate(location?.state ? location.state : "/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const hadleGoogleLogin = () => {
+    signinWithGoogle()
+      .then((result) => {
+        console.log(result);
+        // toast.success("Google Login Successful!");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
@@ -76,9 +89,13 @@ const Register = () => {
             Register
           </button>
         </form>
-        <button className="w-full bg-red-500 text-white p-2 rounded mt-4 hover:bg-red-600">
+        <button
+          onClick={hadleGoogleLogin}
+          className="w-full bg-red-500 text-white p-2 rounded mt-4 hover:bg-red-600"
+        >
           Login with Google
         </button>
+
         <Link to="/login" className="p-2 mt-4">
           All ready Have an Account?{" "}
           <span className="text-red-600 text-xl">Login</span>
